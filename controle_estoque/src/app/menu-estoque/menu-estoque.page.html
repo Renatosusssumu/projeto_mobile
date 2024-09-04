@@ -7,7 +7,48 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">menu_estoque</ion-title>
+      <ion-title size="large">nome do estoque</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <form action="">
+    <ion-button>vencimento</ion-button>
+    <ion-button>lista de compras</ion-button>
+    <ion-button>categoria</ion-button>
+    <ion-button>historico</ion-button>
+  </form>
+
+  <ion-toolbar>
+    <ion-buttons slot="secondary">
+      <ion-button>Criar+</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <form action="">
+    <ion-item>
+      <ion-input label="Input with placeholder" placeholder="nome, codigo barra, categoria"></ion-input>
+      <ion-button>pesquisa</ion-button>
+    </ion-item>
+  </form>
+
+  <form action="">
+    <ion-item>
+      <ion-label>vencido</ion-label>
+      <ion-button>cor vencida</ion-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>em vencimento</ion-label>
+      <ion-button>em vencimento</ion-button>
+    </ion-item>
+    
+
+    <ion-list [inset]="true">
+      <ion-item>
+        <ion-label>estoque criado</ion-label>
+        <ion-button>apagar</ion-button>
+        <ion-button>editar</ion-button>
+      </ion-item>
+    </ion-list>
+  </form>
 </ion-content>

@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: 'menu-estoque',
     loadChildren: () => import('./menu-estoque/menu-estoque.module').then( m => m.MenuEstoquePageModule)
+  },
+  {
+    path: 'criacao-produto',
+    loadChildren: () => import('./criacao-produto/criacao-produto.module').then( m => m.CriacaoProdutoPageModule)
   }
 ];
 
