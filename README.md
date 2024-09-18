@@ -4,8 +4,8 @@
 
 projeto de um controle de estoque utilizando ionic
 
-para criar um novo componente utilize o comando 
-ng generate component
+para criar um novo componente utilize o comando :
+ionic g page nome_da_pagina 
 
 antes de comintar verifique se estiver na branch correta 
 para saber vai ate o local do arquivo no terminal
