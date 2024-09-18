@@ -18,10 +18,11 @@ const routes: Routes = [
   {
     path: 'criacao-produto',
     loadChildren: () => import('./criacao-produto/criacao-produto.module').then( m => m.CriacaoProdutoPageModule)
-  },  {
+  },
+  {
     path: 'historico',
     loadChildren: () => import('./historico/historico.module').then( m => m.HistoricoPageModule)
-  }
+  },
 
 ];
 
