@@ -11,38 +11,38 @@
     </ion-toolbar>
   </ion-header>
 
-  <form>
+  <form [formGroup]="criacaoprodForm" (ngSubmit)="onSubmit()">
     <ion-list>
       
       <ion-item>
         <ion-label>nome do produto</ion-label>
-        <ion-input type="text" ></ion-input>
+        <ion-input type="text" formControlName="nomeprod"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label>codigo de barras</ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input type="text" formControlName="cod"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label>quantidade do produto</ion-label>
-        <ion-input type="number"></ion-input>
+        <ion-input type="number" formControlName="quant"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label>quantidade minima</ion-label>
-        <ion-input type="number"></ion-input>
+        <ion-input type="number" formControlName="quantmin"></ion-input>
       </ion-item>
 
 
       <ion-item>
         <ion-label>Data de validade</ion-label>
-        <ion-datetime presentation="date" [preferWheel]="true" displayFormat="DD/MM/YYYY" ></ion-datetime>
+        <ion-datetime presentation="date" [preferWheel]="true" displayFormat="DD/MM/YYYY" formControlName="dataval"></ion-datetime>
       </ion-item>
 
       <ion-item>
         <ion-label>categoria</ion-label>
-        <ion-select type="text">
+        <ion-select type="text" formControlName="categ">
           <ion-select-option value="cat1">cat1</ion-select-option>
           <ion-select-option value="cat2">cat2</ion-select-option>
           <ion-select-option value="cat3">cat3</ion-select-option>
@@ -51,11 +51,11 @@
 
       <ion-item>
         <ion-label>valor pago</ion-label>
-        <ion-input type="number"></ion-input>
+        <ion-input type="number" formControlName="valpag"></ion-input>
       </ion-item>
 
     </ion-list>
 
-    <ion-button expand="full" type="submit">Salvar</ion-button>
+    <ion-button expand="full" type="submit" [disabled]="criacaoprodForm.invalid">Salvar</ion-button>
   </form>
 </ion-content>
