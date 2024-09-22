@@ -14,7 +14,7 @@ e digite git checkout "nome da branch"
 para commitar vai no vs code onde esta escrito commit e aperte para commitar 
 e depois coloque a mensagem com o comando 
 
-git commit-m "a mensagem "
+git commit -m "a mensagem "
 
 para finalizar utilize o comando 
 git push 

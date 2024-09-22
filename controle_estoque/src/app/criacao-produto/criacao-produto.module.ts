@@ -1,11 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule , ReactiveFormsModule} from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-
 import { CriacaoProdutoPageRoutingModule } from './criacao-produto-routing.module';
-
 import { CriacaoProdutoPage } from './criacao-produto.page';
 
 @NgModule({
@@ -13,6 +10,7 @@ import { CriacaoProdutoPage } from './criacao-produto.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    ReactiveFormsModule,
     CriacaoProdutoPageRoutingModule
   ],
   declarations: [CriacaoProdutoPage]
