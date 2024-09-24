@@ -1,8 +1,6 @@
-<ion-header [translucent]="true">
-</ion-header>
+<ion-header [translucent]="true"></ion-header>
 
-<ion-content [fullscreen]="true">
-
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header>
     <ion-toolbar>
       <ion-title>estoques criados</ion-title>
@@ -11,31 +9,56 @@
 
   <div>
     <ion-toolbar>
-
       <ion-buttons slot="secondary">
-        <ion-button color="blue">Criar+</ion-button>
+        <ion-button color="blue" id="open-modal" expand="block">Criar+</ion-button>
       </ion-buttons>
-    
     </ion-toolbar>
-
   </div>
 
-  <form action="">
+  <form>
     <ion-list [inset]="true">
-
       <ion-item-sliding>
-
         <ion-item>
           <ion-label>estoque criado</ion-label>
         </ion-item>
-
         <ion-item-options>
           <ion-button color="danger">apagar</ion-button>
           <ion-button>editar</ion-button>
         </ion-item-options>
-
       </ion-item-sliding>
-
     </ion-list>
   </form>
+
+  <!-- Modal para criação de estoque -->
+  <ion-modal trigger="open-modal" #modal>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Criar estoque</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <!-- Formulário de criação -->
+        <form [formGroup]="criacaoestForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label>nome do estoque</ion-label>
+            <ion-input type="text" formControlName="nomeest"></ion-input>
+          </ion-item>
+          <!-- Botão de salvar -->
+          <ion-button expand="full" type="submit" [disabled]="criacaoestForm.invalid" id="alert">Salvar</ion-button>
+        </form>
+
+        <!-- Alerta de sucesso -->
+        <ion-alert
+          trigger="alert"
+          header="O estoque foi salvo"
+          [buttons]="alertButtons">
+        </ion-alert>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
