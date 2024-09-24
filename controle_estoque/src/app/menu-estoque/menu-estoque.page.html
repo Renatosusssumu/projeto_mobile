@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">nome do estoque</ion-title>
@@ -12,10 +12,10 @@
   </ion-header>
 
   <form action="">
-    <ion-button>vencimento</ion-button>
+    <ion-button >vencimento</ion-button>
     <ion-button>lista de compras</ion-button>
-    <ion-button>categoria</ion-button>
-    <ion-button>historico</ion-button>
+    <ion-button id="open-modal" espand="block">categoria</ion-button>
+    <ion-button >historico</ion-button>
   </form>
 
   <ion-toolbar>
@@ -51,4 +51,31 @@
       </ion-item>
     </ion-list>
   </form>
+
+  <ion-modal trigger="open-modal" #modal>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-button (click)="cancel()">cancel</ion-button>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label>nova categoria</ion-label>
+            <ion-input type="text" formControlName="categoria"></ion-input>
+          </ion-item>
+        </form>
+        <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">confirm</ion-button>
+
+        <ion-alert
+          trigger="alert"
+          header="O estoque foi salvo"
+          [buttons]="alertButtons">
+        </ion-alert>
+      </ion-content>
+
+    </ng-template>
+  </ion-modal>
 </ion-content>
