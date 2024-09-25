@@ -1,61 +1,62 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>criacao_produto</ion-title>
+    <ion-title>Criação de Produto</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">criacao-produto</ion-title>
+      <ion-title size="large">Criar Produto</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <form [formGroup]="criacaoprodForm" (ngSubmit)="onSubmit()">
     <ion-list>
-      
+
       <ion-item>
-        <ion-label position="floating">nome do produto</ion-label>
+        <ion-label position="floating">Nome do Produto</ion-label>
         <ion-input type="text" formControlName="nomeprod"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">codigo de barras</ion-label>
+        <ion-label position="floating">Código de Barras</ion-label>
         <ion-input type="text" formControlName="cod"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">quantidade do produto</ion-label>
+        <ion-label position="floating">Quantidade</ion-label>
         <ion-input type="number" formControlName="quant"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">quantidade minima</ion-label>
+        <ion-label position="floating">Quantidade Mínima</ion-label>
         <ion-input type="number" formControlName="quantmin"></ion-input>
       </ion-item>
 
-
       <ion-item>
-        <ion-label position="floating">Data de validade</ion-label>
+        <ion-label position="floating">Data de Validade</ion-label>
         <ion-datetime presentation="date" [preferWheel]="true" displayFormat="DD/MM/YYYY" formControlName="dataval"></ion-datetime>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">categoria</ion-label>
-        <ion-select type="text" formControlName="categ">
-          <ion-select-option value="cat1">cat1</ion-select-option>
-          <ion-select-option value="cat2">cat2</ion-select-option>
-          <ion-select-option value="cat3">cat3</ion-select-option>
+        <ion-label position="floating">Categoria</ion-label>
+        <ion-select formControlName="categ">
+          <ion-select-option value="cat1">Categoria 1</ion-select-option>
+          <ion-select-option value="cat2">Categoria 2</ion-select-option>
+          <ion-select-option value="cat3">Categoria 3</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">valor pago</ion-label>
+        <ion-label position="floating">Valor Pago</ion-label>
         <ion-input type="number" formControlName="valpag"></ion-input>
       </ion-item>
 
     </ion-list>
 
+    <!-- Botão para salvar o produto -->
     <ion-button expand="full" type="submit" [disabled]="criacaoprodForm.invalid">Salvar</ion-button>
+
   </form>
 </ion-content>

@@ -1,53 +1,52 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>menu_estoque</ion-title>
+    <ion-title>Menu Estoque</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">nome do estoque</ion-title>
+      <ion-title size="large">Nome do Estoque</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <form action="">
-    <ion-button >vencimento</ion-button>
-    <ion-button>lista de compras</ion-button>
-    <ion-button id="open-modal" espand="block">categoria</ion-button>
-    <ion-button >historico</ion-button>
+  <form>
+    <ion-button>Vencimento</ion-button>
+    <ion-button>Lista de Compras</ion-button>
+    <ion-button id="open-modal" expand="block">Categoria</ion-button>
+    <ion-button>Histórico</ion-button>
   </form>
 
   <ion-toolbar>
     <ion-buttons slot="secondary">
-      <ion-button>Criar+</ion-button>
+      <ion-button (click)="modal.present()">Criar+</ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  <form action="">
+  <form>
     <ion-item>
-      <ion-input label="Input with placeholder" placeholder="nome, codigo barra, categoria"></ion-input>
-      <ion-button>pesquisa</ion-button>
+      <ion-input label="Input with placeholder" placeholder="nome, código de barra, categoria"></ion-input>
+      <ion-button>Pesquisa</ion-button>
     </ion-item>
   </form>
 
-  <form action="">
+  <form>
     <ion-item>
-      <ion-label>vencido</ion-label>
-      <ion-button>cor vencida</ion-button>
+      <ion-label>Vencido</ion-label>
+      <ion-button>Cor Vencida</ion-button>
     </ion-item>
 
     <ion-item>
-      <ion-label>em vencimento</ion-label>
-      <ion-button>em vencimento</ion-button>
+      <ion-label>Em Vencimento</ion-label>
+      <ion-button>Em Vencimento</ion-button>
     </ion-item>
-
 
     <ion-list [inset]="true">
       <ion-item>
-        <ion-label>estoque criado</ion-label>
-        <ion-button>apagar</ion-button>
-        <ion-button>editar</ion-button>
+        <ion-label>Estoque Criado</ion-label>
+        <ion-button>Apagar</ion-button>
+        <ion-button>Editar</ion-button>
       </ion-item>
     </ion-list>
   </form>
@@ -56,26 +55,24 @@
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-button (click)="cancel()">cancel</ion-button>
+          <ion-button (click)="cancel()">Cancelar</ion-button>
         </ion-toolbar>
       </ion-header>
 
       <ion-content class="ion-padding">
         <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
           <ion-item>
-            <ion-label>nova categoria</ion-label>
-            <ion-input type="text" formControlName="categoria"></ion-input>
+            <ion-label>Nova Categoria</ion-label>
+            <ion-input type="text" formControlName="categoria" placeholder="Digite o nome da categoria"></ion-input>
           </ion-item>
+          <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid">Confirmar</ion-button>
         </form>
-        <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">confirm</ion-button>
-
         <ion-alert
           trigger="alert"
           header="O estoque foi salvo"
           [buttons]="alertButtons">
         </ion-alert>
       </ion-content>
-
     </ng-template>
   </ion-modal>
 </ion-content>
