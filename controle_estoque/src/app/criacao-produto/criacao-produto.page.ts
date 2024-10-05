@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { IndexeddbService } from '../services/indexeddb.service';  // Importe o serviço de IndexedDB
+import { IndexeddbService } from '../service/indexeddb.service';  // Importe o serviço de IndexedDB
 
 @Component({
   selector: 'app-criacao-produto',

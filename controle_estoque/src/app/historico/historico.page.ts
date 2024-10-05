@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { IndexeddbService } from '../services/indexeddb.service'; // Certifique-se de importar o serviço IndexedDB correto
+import { IndexeddbService } from '../service/indexeddb.service'; // Certifique-se de importar o serviço IndexedDB correto
 
 @Component({
   selector: 'app-historico',

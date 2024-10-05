@@ -65,7 +65,7 @@
             <ion-label>Nova Categoria</ion-label>
             <ion-input type="text" formControlName="categoria" placeholder="Digite o nome da categoria"></ion-input>
           </ion-item>
-          <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid">Confirmar</ion-button>
+          <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">Confirmar</ion-button>
         </form>
         <ion-alert
           trigger="alert"

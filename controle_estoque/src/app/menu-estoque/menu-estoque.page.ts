@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonModal, NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IndexeddbService } from '../services/indexeddb.service';  // Importando o serviço IndexedDB
+import { IndexeddbService } from '../service/indexeddb.service';  // Importando o serviço IndexedDB
 
 @Component({
   selector: 'app-menu-estoque',
@@ -58,6 +58,8 @@ export class MenuEstoquePage implements OnInit {
     // Capturando algum parâmetro de rota, se houver
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
   }
+
+  
 
   cancel() {
     if (this.modal) {

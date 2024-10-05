@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonModal, NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IndexeddbService } from '../services/indexeddb.service'; // Ajuste o caminho conforme necessário
+import { IndexeddbService } from '../service/indexeddb.service'; // Ajuste o caminho conforme necessário
 
 @Component({
   selector: 'app-folder',
@@ -57,8 +57,7 @@ export class FolderPage implements OnInit {
   }
 
   editEstoque(estoque: any) {
-    // Lógica para editar o estoque, se necessário
-    // Você pode abrir um modal de edição com os dados do estoque
+    
   }
 
   cancel() {
