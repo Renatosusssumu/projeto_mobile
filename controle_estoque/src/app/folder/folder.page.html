@@ -1,12 +1,10 @@
-<ion-header [translucent]="true"></ion-header>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Estoques Criados</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>estoques criados</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <div>
     <ion-toolbar>
       <ion-buttons slot="secondary">
@@ -17,15 +15,17 @@
 
   <form>
     <ion-list [inset]="true">
-      <ion-item-sliding>
-        <ion-item>
-          <ion-label>estoque criado</ion-label>
-        </ion-item>
-        <ion-item-options>
-          <ion-button color="danger">apagar</ion-button>
-          <ion-button>editar</ion-button>
-        </ion-item-options>
-      </ion-item-sliding>
+      <ng-container *ngFor="let estoque of estoques">
+        <ion-item-sliding>
+          <ion-item>
+            <ion-label>{{ estoque.Nome }}</ion-label>
+          </ion-item>
+          <ion-item-options>
+            <ion-button color="danger" (click)="deleteEstoque(estoque.id)">Apagar</ion-button>
+            <ion-button (click)="editEstoque(estoque)">Editar</ion-button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
     </ion-list>
   </form>
 
@@ -37,7 +37,7 @@
           <ion-buttons slot="start">
             <ion-button (click)="cancel()">Cancel</ion-button>
           </ion-buttons>
-          <ion-title>Criar estoque</ion-title>
+          <ion-title>Criar Estoque</ion-title>
         </ion-toolbar>
       </ion-header>
 
@@ -45,7 +45,7 @@
         <!-- Formulário de criação -->
         <form [formGroup]="criacaoestForm" (ngSubmit)="onSubmit()">
           <ion-item>
-            <ion-label position="floating">nome do estoque</ion-label>
+            <ion-label position="floating">Nome do Estoque</ion-label>
             <ion-input type="text" formControlName="nomeest"></ion-input>
           </ion-item>
           <!-- Botão de salvar -->
