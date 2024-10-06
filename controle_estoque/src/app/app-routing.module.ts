@@ -22,9 +22,6 @@ const routes: Routes = [
   {
     path: 'historico',
     loadChildren: () => import('./historico/historico.module').then( m => m.HistoricoPageModule)
-  },  {
-    path: 'movimentacao-produto',
-    loadChildren: () => import('./movimentacao-produto/movimentacao-produto.module').then( m => m.MovimentacaoProdutoPageModule)
   },
 
 
