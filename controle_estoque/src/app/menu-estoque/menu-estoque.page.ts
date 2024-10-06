@@ -10,10 +10,13 @@ import { IndexeddbService } from '../service/indexeddb.service';  // Importando 
   styleUrls: ['./menu-estoque.page.scss'],
 })
 export class MenuEstoquePage implements OnInit {
-  @ViewChild(IonModal, { static: false }) modal!: IonModal;  // Agora o segundo argumento está presente
+  @ViewChild('vencimentoModal', { static: false }) vencimentoModal!: IonModal;
+  @ViewChild('listaModal', { static: false }) listaModal!: IonModal;
   alertButtons = ['OK'];
   public folder!: string;
   categoriaForm: FormGroup;
+  produtos: any[]=[];
+  categorias: any[]=[];
 
   constructor(
     private fb: FormBuilder, 
@@ -43,7 +46,7 @@ export class MenuEstoquePage implements OnInit {
       try {
         await this.indexeddbService.addData('Categorias', { Nome: categoria });
         console.log('Categoria adicionada com sucesso');
-        
+        this.loadCategoria();
         // Redireciona o usuário após adicionar a categoria
         this.navCtrl.navigateForward('/menu-estoque', {
           queryParams: this.categoriaForm.value
@@ -57,13 +60,47 @@ export class MenuEstoquePage implements OnInit {
   ngOnInit() {
     // Capturando algum parâmetro de rota, se houver
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
+    this.loadProduto();
+  }
+  ionViewWillEnter() {
+    this.loadProduto(); // Carrega os estoques ao entrar na página
+    this.loadCategoria();
   }
 
-  
+  loadProduto(){
+    this.indexeddbService.getAllData('Produto').then((produtos) => {
+      this.produtos = produtos;
+    });
+  }
 
-  cancel() {
-    if (this.modal) {
-      this.modal.dismiss();
+  loadCategoria(){
+    this.indexeddbService.getAllData('Categorias').then((categorias) => {
+      this.categorias = categorias;
+    });
+  }
+
+  deleteProduto(id: number){
+    this.indexeddbService.deleteData('Produto', id).then(() => {
+      this.loadProduto(); // Recarrega a lista de produto
+    });
+  }
+  
+  deleteCategoria(id: number){
+    this.indexeddbService.deleteData('Categorias', id).then(() => {
+      this.loadCategoria(); // Recarrega a lista de categoria
+    });
+  }
+
+  // Métodos para fechar os modais
+  dismissVencimento() {
+    if (this.vencimentoModal) {
+      this.vencimentoModal.dismiss();
+    }
+  }
+
+  dismissLista() {
+    if (this.listaModal) {
+      this.listaModal.dismiss();
     }
   }
 }

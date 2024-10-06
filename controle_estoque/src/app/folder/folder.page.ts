@@ -14,13 +14,14 @@ export class FolderPage implements OnInit {
   alertButtons = ['OK'];
   public folder!: string;
   criacaoestForm: FormGroup;
-  estoques: any[] = []; // Adicione esta linha
+  estoques: any[] = [];
+  estoqueEditando: any = null; // Variável para armazenar o estoque em edição
 
   constructor(
     private fb: FormBuilder,
     private navCtrl: NavController,
     private activatedRoute: ActivatedRoute,
-    private indexeddbService: IndexeddbService // Injetando o serviço
+    private indexeddbService: IndexeddbService
   ) {
     this.criacaoestForm = this.fb.group({
       nomeest: ['', Validators.required],
@@ -34,19 +35,29 @@ export class FolderPage implements OnInit {
 
   loadEstoques() {
     this.indexeddbService.getAllData('Estoque').then((estoques) => {
-      this.estoques = estoques; // Atualiza a lista de estoques
+      this.estoques = estoques;
     });
   }
 
   onSubmit() {
     if (this.criacaoestForm.valid) {
-      const novoEstoque = {
-        Nome: this.criacaoestForm.value.nomeest
-      };
-      this.indexeddbService.addData('Estoque', novoEstoque).then(() => {
-        this.loadEstoques(); // Recarrega a lista de estoques
-        this.modal.dismiss(); // Fecha o modal
-      });
+      const nome = this.criacaoestForm.value.nomeest;
+      if (this.estoqueEditando) {
+        // Atualizar o estoque existente
+        this.estoqueEditando.Nome = nome;
+        this.indexeddbService.updateData('Estoque', this.estoqueEditando).then(() => {
+          this.loadEstoques(); // Recarrega a lista de estoques
+          this.modal.dismiss(); // Fecha o modal
+          this.estoqueEditando = null; // Resetar o modo de edição
+        });
+      } else {
+        // Criar novo estoque
+        const novoEstoque = { Nome: nome };
+        this.indexeddbService.addData('Estoque', novoEstoque).then(() => {
+          this.loadEstoques(); // Recarrega a lista de estoques
+          this.modal.dismiss(); // Fecha o modal
+        });
+      }
     }
   }
 
@@ -57,12 +68,17 @@ export class FolderPage implements OnInit {
   }
 
   editEstoque(estoque: any) {
-    
+    this.estoqueEditando = estoque; // Definir o estoque que será editado
+    this.criacaoestForm.patchValue({
+      nomeest: estoque.Nome, // Preencher o formulário com os dados do estoque
+    });
+    this.modal.present(); // Abrir o modal para edição
   }
 
   cancel() {
     if (this.modal) {
       this.modal.dismiss(); // Fechar o modal
+      this.estoqueEditando = null; // Resetar o modo de edição
     }
   }
 }
