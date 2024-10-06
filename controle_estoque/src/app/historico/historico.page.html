@@ -5,31 +5,32 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form (ngSubmit)="addHistorico(historicos.values)">
+  <form [formGroup]="historicoForm" (ngSubmit)="onSubmit()">
     <ion-item>
-      <ion-label position="floating">Data</ion-label>
-      <ion-datetime displayFormat="DD/MM/YYYY" ngModel name="data"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Ação</ion-label>
-      <ion-input type="text" ngModel name="acao"></ion-input>
+      <ion-label position="floating">Acao</ion-label>
+      <ion-select formControlName="acao">
+        <ion-select-option value="comprou">Compra</ion-select-option>
+        <ion-select-option value="vendeu">Venda</ion-select-option>
+      </ion-select>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Produto</ion-label>
-      <ion-input type="number" ngModel name="produto"></ion-input>
+      <ion-input type="text" formControlName="produto"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Quantidade</ion-label>
-      <ion-input type="number" ngModel name="quantidade"></ion-input>
+      <ion-input type="number" formControlName="quantidade"></ion-input>
     </ion-item>
-    <ion-button type="submit">Adicionar ao Histórico</ion-button>
+    <ion-button expand="full" type="submit" [disabled]="historicoForm.invalid">Salvar</ion-button>
   </form>
 
-  <ion-list>
-    <ion-item *ngFor="let historico of historicos">
-      <ion-label>
-        {{ historico.Data }} - {{ historico.Acao }} - Produto ID: {{ historico.Produto }} - Qtd: {{ historico.Quantidade }}
-      </ion-label>
-    </ion-item>
+  <ion-list [inset]="true">
+    <ng-container *ngFor="let historico of historicos">
+      <ion-item>
+        <ion-label>{{ historico.Produto }}</ion-label>
+        <ion-label>{{ historico.Quantidade }}</ion-label>
+        <ion-label>{{ historico.Acao }}</ion-label>
+      </ion-item>
+    </ng-container>
   </ion-list>
 </ion-content>
