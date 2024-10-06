@@ -11,51 +11,96 @@
     </ion-toolbar>
   </ion-header>
 
+  <!-- Formulário de Botões de Ações -->
   <form>
-    <ion-button>Vencimento</ion-button>
-    <ion-button>Lista de Compras</ion-button>
-    <ion-button id="open-modal" expand="block">Categoria</ion-button>
+    <!-- Modal para Vencimento -->
+    <ion-button id="open-vencimento-modal" expand="block">Vencimento</ion-button>
+    
+    <!-- Modal para Lista de Compras -->
+    <ion-button id="open-lista-modal" expand="block">Lista de Compras</ion-button>
+    
+    <ion-button id="open-categoria-modal" expand="block">Categoria</ion-button>
     <ion-button>Histórico</ion-button>
   </form>
 
+  <!-- Toolbar para criar novo estoque -->
   <ion-toolbar>
     <ion-buttons slot="secondary">
-      <ion-button (click)="modal.present()">Criar+</ion-button>
+      <ion-button>Criar+</ion-button>
     </ion-buttons>
   </ion-toolbar>
 
+  <!-- Formulário de Pesquisa -->
   <form>
     <ion-item>
-      <ion-input label="Input with placeholder" placeholder="nome, código de barra, categoria"></ion-input>
+      <ion-input placeholder="nome, código de barra, categoria"></ion-input>
       <ion-button>Pesquisa</ion-button>
     </ion-item>
   </form>
 
+  <!-- Lista de Estoques -->
   <form>
     <ion-item>
-      <ion-label>Vencido</ion-label>
-      <ion-button>Cor Vencida</ion-button>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Em Vencimento</ion-label>
+      <ion-label (click)="loadProduto()">Em Vencimento</ion-label>
       <ion-button>Em Vencimento</ion-button>
     </ion-item>
 
     <ion-list [inset]="true">
-      <ion-item>
-        <ion-label>Estoque Criado</ion-label>
-        <ion-button>Apagar</ion-button>
-        <ion-button>Editar</ion-button>
-      </ion-item>
+      <ng-container *ngFor="let produtos of produtos">
+        <ion-item-sliding>
+          <ion-item>
+            <ion-label>{{ produtos.Nome }}</ion-label>
+          </ion-item>
+          <ion-item-options>
+            <ion-button color="danger" (click)="deleteProduto(produtos.id)">Apagar</ion-button>
+            <ion-button>Editar</ion-button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
     </ion-list>
   </form>
-
-  <ion-modal trigger="open-modal" #modal>
+<!-- modal para vencimento-->
+  <ion-modal id="vencimento-modal" #vencimentoModal trigger="open-vencimento-modal">
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-button (click)="cancel()">Cancelar</ion-button>
+          <ion-title>Vencimento</ion-title>
+          <ion-buttons slot="start">
+            <ion-button (click)="dismissVencimento()">Fechar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+  
+      <ion-content>
+        <p>Conteúdo do modal de vencimento...</p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  
+  <!-- Modal para Lista de Compras -->
+  <ion-modal id="lista-modal" #listaModal trigger="open-lista-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Lista de Compras</ion-title>
+          <ion-buttons slot="start">
+            <ion-button (click)="dismissLista()">Fechar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+  
+      <ion-content>
+        <p>Conteúdo do modal da lista de compras...</p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal para criação de categoria -->
+  <ion-modal trigger="open-categoria-modal" #modal>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-button (click)="modal.dismiss()">Cancelar</ion-button>
         </ion-toolbar>
       </ion-header>
 
@@ -67,11 +112,21 @@
           </ion-item>
           <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">Confirmar</ion-button>
         </form>
-        <ion-alert
-          trigger="alert"
-          header="O estoque foi salvo"
-          [buttons]="alertButtons">
-        </ion-alert>
+
+        <ion-list [inset]="true">
+          <ng-container *ngFor="let categorias of categorias">
+            <ion-item-sliding>
+              <ion-item>
+                <ion-label>{{ categorias.Nome }}</ion-label>
+              </ion-item>
+              <ion-item-options>
+                <ion-button color="danger" (click)="deleteCategoria(categorias.id)">Apagar</ion-button>
+                <ion-button>Editar</ion-button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ng-container>
+        </ion-list>
+
       </ion-content>
     </ng-template>
   </ion-modal>
