@@ -18,38 +18,27 @@ export class IndexeddbService {
 
       request.onupgradeneeded = (event: any) => {
         const db = event.target.result;
-
+      
         if (!db.objectStoreNames.contains('Estoque')) {
           const estoqueStore = db.createObjectStore('Estoque', { keyPath: 'id', autoIncrement: true });
           estoqueStore.createIndex('Nome', 'Nome', { unique: false });
         }
-
+      
         if (!db.objectStoreNames.contains('Categorias')) {
           const categoriasStore = db.createObjectStore('Categorias', { keyPath: 'id', autoIncrement: true });
           categoriasStore.createIndex('Nome', 'Nome', { unique: false });
         }
-
-        if (!db.objectStoreNames.contains('Historico')) {
-          const historicoStore = db.createObjectStore('Historico', { keyPath: 'id', autoIncrement: true });
-          historicoStore.createIndex('Data', 'Data', { unique: false });
-          historicoStore.createIndex('Produto', 'Produto', { unique: false });
-          historicoStore.createIndex('Acao', 'Acao', { unique: false });
+      
+        if (!db.objectStoreNames.contains('Movimentacao')) {
+          const movimentacaoStore = db.createObjectStore('Movimentacao', { keyPath: 'id', autoIncrement: true });
+          movimentacaoStore.createIndex('Acao', 'Acao', { unique: false });
+          movimentacaoStore.createIndex('Produto', 'Produto', { unique: false });
+          movimentacaoStore.createIndex('Data', 'Data', { unique: false });
+          movimentacaoStore.createIndex('Quant', 'Quant', { unique: false });
+          console.log('Tabela Movimentacao criada com sucesso');
         }
-
-        if (!db.objectStoreNames.contains('Produto')) {
-          const produtoStore = db.createObjectStore('Produto', { keyPath: 'id', autoIncrement: true });
-          produtoStore.createIndex('CodigoBarras', 'CodigoBarras', { unique: true });
-          produtoStore.createIndex('QuantidadeEstoque', 'QuantidadeEstoque', { unique: false });
-          produtoStore.createIndex('Categoria', 'Categoria', { unique: false });
-        }
-
-        if (!db.objectStoreNames.contains('Login')) {
-          const loginStore = db.createObjectStore('Login', { keyPath: 'id', autoIncrement: true });
-          loginStore.createIndex('Email', 'Email', { unique: true });
-        }
-
-        console.log('Banco de dados criado/atualizado com sucesso.');
       };
+      
 
       request.onsuccess = (event: any) => {
         const db = event.target.result as IDBDatabase; // Garantir que `db` seja do tipo `IDBDatabase`
