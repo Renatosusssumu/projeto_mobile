@@ -29,8 +29,12 @@ export class FolderPage implements OnInit {
   }
 
   ngOnInit() {
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
+    this.folder = this.activatedRoute.snapshot.paramMap.get('idestoque') as string;
     this.loadEstoques(); // Carrega estoques ao iniciar
+  }
+
+  ionViewWillEnter() {
+    this.loadEstoques();
   }
 
   loadEstoques() {
@@ -80,5 +84,11 @@ export class FolderPage implements OnInit {
       this.modal.dismiss(); // Fechar o modal
       this.estoqueEditando = null; // Resetar o modo de edição
     }
+  }
+
+  goestoque (idestoque: string){
+    this.navCtrl.navigateForward('/menu-estoque',{
+      queryParams:{idestoque}
+    });
   }
 }

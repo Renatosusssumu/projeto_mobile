@@ -14,8 +14,12 @@
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label position="floating">Produto</ion-label>
-      <ion-input type="text" formControlName="produto"></ion-input>
+      <ion-label>Produto</ion-label>
+      <ion-select formControlName="produto">
+        <ion-select-option *ngFor="let produtos of produtos" [value]="produtos.id">
+          {{ produtos.Nome }}
+        </ion-select-option>
+      </ion-select>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Quantidade</ion-label>
@@ -27,7 +31,7 @@
   <ion-list [inset]="true">
     <ng-container *ngFor="let historico of historicos">
       <ion-item>
-        <ion-label>{{ historico.Produto }}</ion-label>
+        <ion-label>{{ getProdutoNome(historico.Produto) }}</ion-label>
         <ion-label>{{ historico.Quantidade }}</ion-label>
         <ion-label>{{ historico.Acao }}</ion-label>
       </ion-item>

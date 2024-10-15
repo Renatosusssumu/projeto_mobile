@@ -20,13 +20,13 @@
     <ion-button id="open-lista-modal" expand="block">Lista de Compras</ion-button>
     
     <ion-button id="open-categoria-modal" expand="block">Categoria</ion-button>
-    <ion-button>Histórico</ion-button>
+    <ion-button (click)="historico()" expand="block">Histórico</ion-button>
   </form>
 
   <!-- Toolbar para criar novo estoque -->
   <ion-toolbar>
     <ion-buttons slot="secondary">
-      <ion-button>Criar+</ion-button>
+      <ion-button (click)="criacaoProd()">Criar+</ion-button>
     </ion-buttons>
   </ion-toolbar>
 

@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { NavController, NavParams } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
 import { IndexeddbService } from '../service/indexeddb.service'; // Certifique-se de importar o serviço IndexedDB correto
 
 @Component({
@@ -12,11 +13,14 @@ export class HistoricoPage implements OnInit {
 
   historicoForm: FormGroup;
   historicos: any[] = [];
+  idestoque !: string;
+  produtos:any[]=[];
 
   constructor(
     private fb: FormBuilder,
     private navCtrl: NavController,
-    private indexeddbService: IndexeddbService
+    private indexeddbService: IndexeddbService,
+    private route: ActivatedRoute
   ) {
     // Inicializando o formulário
     this.historicoForm = this.fb.group({
@@ -28,10 +32,21 @@ export class HistoricoPage implements OnInit {
 
   ngOnInit() {
     this.loadHistorico(); // Carregar histórico na inicialização
+    this.route.queryParams.subscribe(params => {
+      this.idestoque = params['idestoque'];
+      console.log('ID Estoque:', this.idestoque);
+    });
   }
 
   ionViewWillEnter() {
     this.loadHistorico(); // Carregar histórico sempre que a tela for exibida
+    this.loadProduto();
+  }
+
+  loadProduto(){
+    this.indexeddbService.getAllData('Produto').then((produtos) => {
+      this.produtos = produtos;
+    });
   }
 
   loadHistorico() {
@@ -48,7 +63,8 @@ export class HistoricoPage implements OnInit {
         Acao: this.historicoForm.value.acao,
         Quantidade: this.historicoForm.value.quantidade,
         Produto: this.historicoForm.value.produto,
-        Data: new Date().toISOString() // Adicionar data do dispositivo
+        Data: new Date().toISOString(), // Adicionar data do dispositivo
+        Esto:this.idestoque
       };
 
       // Adicionando o histórico no banco de dados (IndexedDB)
@@ -61,4 +77,10 @@ export class HistoricoPage implements OnInit {
       this.navCtrl.navigateForward('/historico');
     }
   }
+
+  getProdutoNome(produtoId: number): string {
+    const produto = this.produtos.find(prod => prod.id === produtoId);
+    return produto ? produto.Nome : 'Produto desconhecido';
+  }
+
 }
