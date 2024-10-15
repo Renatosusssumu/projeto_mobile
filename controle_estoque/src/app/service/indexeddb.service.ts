@@ -27,7 +27,9 @@ export class IndexeddbService {
         if (!db.objectStoreNames.contains('Categorias')) {
           const categoriasStore = db.createObjectStore('Categorias', { keyPath: 'id', autoIncrement: true });
           categoriasStore.createIndex('Nome', 'Nome', { unique: false });
+          categoriasStore.createIndex('Esto', 'Esto', { unique: false });
         }
+        
 
         if (!db.objectStoreNames.contains('Historico')) {
           const historicoStore = db.createObjectStore('Historico', { keyPath: 'id', autoIncrement: true });
@@ -35,6 +37,7 @@ export class IndexeddbService {
           historicoStore.createIndex('Produto', 'Produto', { unique: false });
           historicoStore.createIndex('Acao', 'Acao', { unique: false });
           historicoStore.createIndex('Quantidade', 'Quantidade', { unique: false });
+          historicoStore.createIndex('Esto', 'Esto', { unique: false });
         }
 
         if (!db.objectStoreNames.contains('Produto')) {
@@ -42,6 +45,7 @@ export class IndexeddbService {
           produtoStore.createIndex('CodigoBarras', 'CodigoBarras', { unique: true });
           produtoStore.createIndex('QuantidadeEstoque', 'QuantidadeEstoque', { unique: false });
           produtoStore.createIndex('Categoria', 'Categoria', { unique: false });
+          produtoStore.createIndex('Esto','Esto',{unique:false});
         }
 
         if (!db.objectStoreNames.contains('Login')) {

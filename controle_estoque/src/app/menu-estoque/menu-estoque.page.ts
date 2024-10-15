@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonModal, NavController } from '@ionic/angular';
+import { IonModal, NavController, NavParams } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IndexeddbService } from '../service/indexeddb.service';  // Importando o serviço IndexedDB
 
@@ -17,12 +17,15 @@ export class MenuEstoquePage implements OnInit {
   categoriaForm: FormGroup;
   produtos: any[]=[];
   categorias: any[]=[];
+  idestoque !: string;
+  
 
   constructor(
     private fb: FormBuilder, 
     private navCtrl: NavController, 
     private activatedRoute: ActivatedRoute,
-    private indexeddbService: IndexeddbService  // Injetando o IndexedDBService
+    private indexeddbService: IndexeddbService,  // Injetando o IndexedDBService
+    private route: ActivatedRoute
   ) { 
     // Formulário para adição de categorias
     this.categoriaForm = this.fb.group({
@@ -44,7 +47,11 @@ export class MenuEstoquePage implements OnInit {
       
       // Adicionando categoria ao IndexedDB
       try {
-        await this.indexeddbService.addData('Categorias', { Nome: categoria });
+        const categoria = {
+          Nome: this.categoriaForm.value.categoria,
+          Esto: this.idestoque,
+        }
+        await this.indexeddbService.addData('Categorias', categoria);
         console.log('Categoria adicionada com sucesso');
         this.loadCategoria();
         // Redireciona o usuário após adicionar a categoria
@@ -61,7 +68,13 @@ export class MenuEstoquePage implements OnInit {
     // Capturando algum parâmetro de rota, se houver
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
     this.loadProduto();
+    
+    this.route.queryParams.subscribe(params => {
+      this.idestoque = params['idestoque'];
+      console.log('ID Estoque recebido:', this.idestoque);  // Verifique se o ID foi corretamente recebido
+    });
   }
+
   ionViewWillEnter() {
     this.loadProduto(); // Carrega os estoques ao entrar na página
     this.loadCategoria();
@@ -102,5 +115,17 @@ export class MenuEstoquePage implements OnInit {
     if (this.listaModal) {
       this.listaModal.dismiss();
     }
+  }
+
+  criacaoProd (){
+    this.navCtrl.navigateForward('/criacao-produto',{
+      queryParams:{idestoque: this.idestoque}
+    });
+  }
+
+  historico (){
+    this.navCtrl.navigateForward('/historico',{
+      queryParams:{idestoque: this.idestoque}
+    });
   }
 }
