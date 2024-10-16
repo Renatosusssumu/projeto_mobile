@@ -54,10 +54,6 @@ export class MenuEstoquePage implements OnInit {
         await this.indexeddbService.addData('Categorias', categoria);
         console.log('Categoria adicionada com sucesso');
         this.loadCategoria();
-        // Redireciona o usuário após adicionar a categoria
-        this.navCtrl.navigateForward('/menu-estoque', {
-          queryParams: this.categoriaForm.value
-        });
       } catch (error) {
         console.error('Erro ao adicionar a categoria:', error);
       }
@@ -82,13 +78,13 @@ export class MenuEstoquePage implements OnInit {
 
   loadProduto(){
     this.indexeddbService.getAllData('Produto').then((produtos) => {
-      this.produtos = produtos;
+      this.produtos = produtos.filter(produtos => produtos.Esto === this.idestoque);
     });
   }
 
   loadCategoria(){
     this.indexeddbService.getAllData('Categorias').then((categorias) => {
-      this.categorias = categorias;
+      this.categorias = categorias.filter(categoria => categoria.Esto === this.idestoque);
     });
   }
 

@@ -51,7 +51,7 @@ export class HistoricoPage implements OnInit {
 
   loadHistorico() {
     this.indexeddbService.getAllData('Historico').then((historicos) => {
-      this.historicos = historicos;
+      this.historicos = historicos.filter(historicos => historicos.Esto === this.idestoque);
     });
   }
 
