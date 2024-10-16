@@ -71,7 +71,7 @@ export class CriacaoProdutoPage implements OnInit {
 
   loadCategorias() {
     this.indexeddbService.getAllData('Categorias').then((categoria) => {
-      this.categoria = categoria;
+      this.categoria = categoria.filter(categoria => categoria.Esto === this.idestoque);
     });
   }
 
