@@ -79,4 +79,10 @@ export class CriacaoProdutoPage implements OnInit {
     this.loadCategorias();
   }
 
+  voltar (){
+    this.navCtrl.navigateForward('/menu-estoque',{
+      queryParams:{idestoque: this.idestoque}
+    });
+  }
+
 }
