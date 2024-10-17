@@ -124,4 +124,9 @@ export class MenuEstoquePage implements OnInit {
       queryParams:{idestoque: this.idestoque}
     });
   }
+  voltar (){
+    this.navCtrl.navigateForward('/folder/inbox',{
+      queryParams:{idestoque: this.idestoque}
+    });
+  }
 }

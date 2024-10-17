@@ -10,7 +10,7 @@
       <ion-title size="large">Criar Produto</ion-title>
     </ion-toolbar>
   </ion-header>
-
+  <ion-button (click)="voltar()">voltar</ion-button>
   <form [formGroup]="criacaoprodForm" (ngSubmit)="onSubmit()">
     <ion-list>
       
@@ -36,7 +36,8 @@
 
       <ion-item>
         <ion-label position="floating">Data de Validade</ion-label>
-        <ion-datetime presentation="date" [preferWheel]="true" displayFormat="DD/MM/YYYY" formControlName="dataval"></ion-datetime>
+        
+        <ion-datetime value="2022-04-21T00:00:00" min="2022-03-01T00:00:00" max="2029-05-31T23:59:59" formControlName="dataval"></ion-datetime>
       </ion-item>
 
       

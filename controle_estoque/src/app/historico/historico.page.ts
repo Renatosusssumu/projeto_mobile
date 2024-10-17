@@ -83,4 +83,10 @@ export class HistoricoPage implements OnInit {
     return produto ? produto.Nome : 'Produto desconhecido';
   }
 
+  voltar (){
+    this.navCtrl.navigateForward('/menu-estoque',{
+      queryParams:{idestoque: this.idestoque}
+    });
+  }
+
 }
