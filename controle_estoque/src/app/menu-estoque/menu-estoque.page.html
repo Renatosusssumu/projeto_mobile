@@ -41,11 +41,6 @@
 
   <!-- Lista de Estoques -->
   <form>
-    <ion-item>
-      <ion-label (click)="loadProduto()">Em Vencimento</ion-label>
-      <ion-button>Em Vencimento</ion-button>
-    </ion-item>
-
     <ion-list [inset]="true">
       <ng-container *ngFor="let produtos of produtos">
         <ion-item-sliding>
@@ -89,23 +84,35 @@
     </ng-template>
   </ion-modal>
   
-  <!-- Modal para Lista de Compras -->
-  <ion-modal id="lista-modal" #listaModal trigger="open-lista-modal">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Lista de Compras</ion-title>
-          <ion-buttons slot="start">
-            <ion-button (click)="dismissLista()">Fechar</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-  
-      <ion-content>
-        <p>Conteúdo do modal da lista de compras...</p>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+ <!-- Modal para Lista de Compras -->
+<ion-modal id="lista-modal" #listaModal trigger="open-lista-modal" (willPresent)="loadListaCompras()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Lista de Compras</ion-title>
+        <ion-buttons slot="start">
+          <ion-button (click)="dismissLista()">Fechar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ng-container *ngFor="let produto of listaCompras">
+        <ion-item-sliding>
+          <ion-item>
+            <ion-label>
+              {{ produto.Nome }} - Quantidade: {{ produto.QuantidadeEstoque }} (Mínimo: {{ produto.QuantidadeMinima }})
+            </ion-label>
+          </ion-item>
+          <ion-item-options>
+            <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
 
   <!-- Modal para criação de categoria -->
   <ion-modal trigger="open-categoria-modal" #modal>

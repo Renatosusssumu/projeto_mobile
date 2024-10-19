@@ -19,6 +19,8 @@ export class MenuEstoquePage implements OnInit {
   categorias: any[]=[];
   vencidos: any[]=[];
   idestoque !: string;
+  listaCompras: any[] = [];
+
   
 
   constructor(
@@ -76,6 +78,7 @@ export class MenuEstoquePage implements OnInit {
     this.loadProduto(); // Carrega os estoques ao entrar na página
     this.loadCategoria();
     this.produtosVencidos();
+    this.loadListaCompras();
   }
 
   loadProduto(){
@@ -86,9 +89,16 @@ export class MenuEstoquePage implements OnInit {
 
   loadCategoria(){
     this.indexeddbService.getAllData('Categorias').then((categorias) => {
-      this.categorias = categorias.filter(categoria => categoria.Esto === this.idestoque);
+      this.categorias = categorias.filter(categoria => categoria.Esto == this.idestoque);
     });
   }
+
+  loadListaCompras() {
+    this.indexeddbService.getAllData('Produto').then((produtos) => {
+      this.listaCompras = produtos.filter(produto => produto.QuantidadeEstoque < produto.QuantidadeMinima && produto.Esto == this.idestoque);
+    });
+  }
+  
 
   produtosVencidos(){
     const today = new Date();

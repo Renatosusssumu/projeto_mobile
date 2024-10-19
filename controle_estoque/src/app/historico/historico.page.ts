@@ -56,27 +56,61 @@ export class HistoricoPage implements OnInit {
   }
 
   // Método para enviar os dados do formulário e salvar no IndexedDB
-  onSubmit() {
-    if (this.historicoForm.valid) {
-      // Extrair dados do formulário
-      const historico = {
-        Acao: this.historicoForm.value.acao,
-        Quantidade: this.historicoForm.value.quantidade,
-        Produto: this.historicoForm.value.produto,
-        Data: new Date().toISOString(), // Adicionar data do dispositivo
-        Esto:this.idestoque
-      };
+  // Método para enviar os dados do formulário e salvar no IndexedDB
+onSubmit() {
+  if (this.historicoForm.valid) {
+    // Extrair dados do formulário
+    const acao = this.historicoForm.value.acao;
+    const quantidade = this.historicoForm.value.quantidade;
+    const produtoId = this.historicoForm.value.produto;
 
-      // Adicionando o histórico no banco de dados (IndexedDB)
-      this.indexeddbService.addData('Historico', historico).then(() => {
-        this.loadHistorico(); // Recarregar o histórico para exibir o novo item
-        this.historicoForm.reset(); // Limpar o formulário após adicionar
+    // Buscar todos os produtos no IndexedDB e filtrar pelo ID
+    this.indexeddbService.getAllData('Produto').then((produtos) => {
+      const produto = produtos.find(p => p.id === produtoId);
+      if (!produto) {
+        console.error('Produto não encontrado');
+        return;
+      }
+
+      // Atualizar a quantidade com base na ação
+      let novaQuantidade;
+      if (acao === 'comprou') {
+        novaQuantidade = produto.QuantidadeEstoque + quantidade; // Aumentar a quantidade se for uma compra
+      } else if (acao === 'vendeu') {
+        novaQuantidade = produto.QuantidadeEstoque - quantidade; // Diminuir a quantidade se for uma venda
+        if (novaQuantidade < 0) {
+          novaQuantidade = 0; // Garantir que a quantidade não seja negativa
+        }
+      }
+
+      // Atualizar o produto com a nova quantidade
+      produto.QuantidadeEstoque = novaQuantidade;
+      this.indexeddbService.updateData('Produto', produto).then(() => {
+        console.log('Produto atualizado com sucesso');
+
+        // Adicionando o histórico no banco de dados (IndexedDB)
+        const historico = {
+          Acao: acao,
+          Quantidade: quantidade,
+          Produto: produtoId,
+          Data: new Date().toISOString(), // Adicionar data do dispositivo
+          Esto: this.idestoque
+        };
+
+        this.indexeddbService.addData('Historico', historico).then(() => {
+          this.loadHistorico(); // Recarregar o histórico para exibir o novo item
+          this.historicoForm.reset(); // Limpar o formulário após adicionar
+        });
+      }).catch(error => {
+        console.error('Erro ao atualizar o produto:', error);
       });
+    }).catch(error => {
+      console.error('Erro ao buscar os produtos:', error);
+    });
 
-      // Redirecionar para a página de histórico
-      this.navCtrl.navigateForward('/historico');
-    }
   }
+}
+
 
   getProdutoNome(produtoId: number): string {
     const produto = this.produtos.find(prod => prod.id === produtoId);
