@@ -10,7 +10,6 @@
       <ion-title size="large">Nome do Estoque</ion-title>
     </ion-toolbar>
   </ion-header>
-
   <ion-button (click)="voltar()">voltar</ion-button>
 
   <!-- Formulário de Botões de Ações -->
@@ -74,7 +73,18 @@
       </ion-header>
   
       <ion-content>
-        <p>Conteúdo do modal de vencimento...</p>
+        <ng-container *ngFor="let produto of vencidos">
+          <ion-item-sliding>
+            <ion-item>
+              <ion-label>{{ produto.Nome }}</ion-label>
+              <ion-label color="danger">Vencido em: {{ produto.DataValidade | date: 'dd/MM/yyyy' }}</ion-label>
+            </ion-item>
+            <ion-item-options>
+              <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
+              <ion-button>Editar</ion-button>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ng-container>
       </ion-content>
     </ng-template>
   </ion-modal>
