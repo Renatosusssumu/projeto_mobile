@@ -44,6 +44,7 @@ export class IndexeddbService {
           const produtoStore = db.createObjectStore('Produto', { keyPath: 'id', autoIncrement: true });
           produtoStore.createIndex('CodigoBarras', 'CodigoBarras', { unique: true });
           produtoStore.createIndex('QuantidadeEstoque', 'QuantidadeEstoque', { unique: false });
+          produtoStore.createIndex('DataValidade', 'DataValidade', { unique: false });
           produtoStore.createIndex('Categoria', 'Categoria', { unique: false });
           produtoStore.createIndex('Esto','Esto',{unique:false});
         }

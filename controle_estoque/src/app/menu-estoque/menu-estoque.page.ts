@@ -17,6 +17,7 @@ export class MenuEstoquePage implements OnInit {
   categoriaForm: FormGroup;
   produtos: any[]=[];
   categorias: any[]=[];
+  vencidos: any[]=[];
   idestoque !: string;
   
 
@@ -61,9 +62,9 @@ export class MenuEstoquePage implements OnInit {
   }
 
   ngOnInit() {
-    // Capturando algum parâmetro de rota, se houver
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
     this.loadProduto();
+    this.loadCategoria();
+    this.produtosVencidos();
     
     this.route.queryParams.subscribe(params => {
       this.idestoque = params['idestoque'];
@@ -74,11 +75,12 @@ export class MenuEstoquePage implements OnInit {
   ionViewWillEnter() {
     this.loadProduto(); // Carrega os estoques ao entrar na página
     this.loadCategoria();
+    this.produtosVencidos();
   }
 
   loadProduto(){
     this.indexeddbService.getAllData('Produto').then((produtos) => {
-      this.produtos = produtos.filter(produtos => produtos.Esto === this.idestoque);
+      this.produtos = produtos.filter(produtos => produtos.Esto == this.idestoque);
     });
   }
 
@@ -86,6 +88,17 @@ export class MenuEstoquePage implements OnInit {
     this.indexeddbService.getAllData('Categorias').then((categorias) => {
       this.categorias = categorias.filter(categoria => categoria.Esto === this.idestoque);
     });
+  }
+
+  produtosVencidos(){
+    const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0]; // Pega apenas a data, no formato YYYY-MM-DD
+  this.indexeddbService.getAllData('Produto').then((vencidos) => {
+    this.vencidos = vencidos.filter(produto => {
+      const dataValidade = produto.DataValidade.split('T')[0]; // Pega apenas a parte da data da validade
+      return dataValidade < formattedDate && produto.Esto == this.idestoque; // Compara as datas
+    });
+  });
   }
 
   deleteProduto(id: number){
