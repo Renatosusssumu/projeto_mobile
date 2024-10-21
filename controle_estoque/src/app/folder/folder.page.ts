@@ -66,10 +66,14 @@ export class FolderPage implements OnInit {
   }
 
   deleteEstoque(id: number) {
-    this.indexeddbService.deleteData('Estoque', id).then(() => {
-      this.loadEstoques(); // Recarrega a lista de estoques
+    this.indexeddbService.deleteAllRelatedToEstoque(id).then(() => {
+      this.indexeddbService.deleteData('Estoque', id).then(() => {
+        this.loadEstoques(); // Recarrega a lista de estoques
+      });
     });
   }
+  
+    
 
   editEstoque(estoque: any) {
     this.estoqueEditando = estoque; // Definir o estoque que será editado
