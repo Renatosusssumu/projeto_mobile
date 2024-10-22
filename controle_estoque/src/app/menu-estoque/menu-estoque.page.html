@@ -18,38 +18,33 @@
     <ion-button>Histórico</ion-button>
   </form>
 
+  
+  <form>
+    <ion-item>
+      <ion-input 
+        placeholder="Pesquisar por nome, código de barras, categoria" 
+        [(ngModel)]="searchTerm" 
+        (ionInput)="filterProducts()"
+      ></ion-input>
+    </ion-item>
+  </form>
+
+  
+  <ion-list>
+    <ion-item *ngFor="let produto of produtosFiltrados">
+      <ion-label>
+        <h2>{{ produto.nome }}</h2>
+        <p>Código de Barra: {{ produto.codigoBarra }}</p>
+        <p>Categoria: {{ produto.categoria }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
   <ion-toolbar>
     <ion-buttons slot="secondary">
       <ion-button (click)="modal.present()">Criar+</ion-button>
     </ion-buttons>
   </ion-toolbar>
-
-  <form>
-    <ion-item>
-      <ion-input label="Input with placeholder" placeholder="nome, código de barra, categoria"></ion-input>
-      <ion-button>Pesquisa</ion-button>
-    </ion-item>
-  </form>
-
-  <form>
-    <ion-item>
-      <ion-label>Vencido</ion-label>
-      <ion-button>Cor Vencida</ion-button>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Em Vencimento</ion-label>
-      <ion-button>Em Vencimento</ion-button>
-    </ion-item>
-
-    <ion-list [inset]="true">
-      <ion-item>
-        <ion-label>Estoque Criado</ion-label>
-        <ion-button>Apagar</ion-button>
-        <ion-button>Editar</ion-button>
-      </ion-item>
-    </ion-list>
-  </form>
 
   <ion-modal trigger="open-modal" #modal>
     <ng-template>
