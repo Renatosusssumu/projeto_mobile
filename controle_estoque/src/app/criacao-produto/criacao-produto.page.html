@@ -1,5 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="voltar()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>Criação de Produto</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -40,9 +45,6 @@
         <ion-datetime presentation="date" max="2029-05-31T23:59:59" displayFormat="DD/MM/YYYY" formControlName="dataval"></ion-datetime>
       </ion-item>
 
-      
-
-      
       <ion-item>
         <ion-label>Categoria</ion-label>
         <ion-select formControlName="categ">
@@ -64,4 +66,3 @@
 
   </form>
 </ion-content>
-

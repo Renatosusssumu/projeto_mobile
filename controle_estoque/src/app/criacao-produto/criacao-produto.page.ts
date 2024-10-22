@@ -38,11 +38,16 @@ export class CriacaoProdutoPage implements OnInit {
   ngOnInit() {
     this.folder = 'Cadastro de Produto';
     this.loadCategorias();
+  
     this.route.queryParams.subscribe(params => {
       this.idestoque = params['idestoque'];
-      console.log('ID Estoque:', this.idestoque);
+      const produtoId = params['produtoId']; // Capturar o ID do produto se houver
+      if (produtoId) {
+        this.loadProduto(produtoId); // Carregar dados do produto
+      }
     });
   }
+  
 
   // Método para enviar os dados do formulário e salvar no IndexedDB
   onSubmit() {
@@ -84,5 +89,22 @@ export class CriacaoProdutoPage implements OnInit {
       queryParams:{idestoque: this.idestoque}
     });
   }
-
+  loadProduto(produtoId: string) {
+    this.indexeddbService.getAllData('Produto').then(produtos => {
+      const produto = produtos.find(p => p.id === produtoId);
+      if (produto) {
+        // Preenche o formulário com os dados do produto
+        this.criacaoprodForm.patchValue({
+          nomeprod: produto.Nome,
+          cod: produto.CodigoBarras,
+          quant: produto.QuantidadeEstoque,
+          quantmin: produto.QuantidadeMinima,
+          dataval: produto.DataValidade,
+          categ: produto.Categoria,
+          valpag: produto.ValorPago
+        });
+      }
+    });
+  }
+   
 }

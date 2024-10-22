@@ -50,7 +50,7 @@
           </ion-item>
           <ion-item-options>
             <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
-            <ion-button>Editar</ion-button>
+            <ion-button (click)="editProduto(produto)">Editar</ion-button>
           </ion-item-options>
         </ion-item-sliding>
       </ng-container>
@@ -142,7 +142,7 @@
               </ion-item>
               <ion-item-options>
                 <ion-button color="danger" (click)="deleteCategoria(categorias.id)">Apagar</ion-button>
-                <ion-button>Editar</ion-button>
+                <ion-button (click)="editCategoria(categorias)">Editar</ion-button>
               </ion-item-options>
             </ion-item-sliding>
           </ng-container>
@@ -184,3 +184,4 @@
   </ng-template>
 </ion-modal>
 </ion-content>
+
