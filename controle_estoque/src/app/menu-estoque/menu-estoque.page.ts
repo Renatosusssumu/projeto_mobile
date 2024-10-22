@@ -10,7 +10,7 @@ import { IndexeddbService } from '../service/indexeddb.service';
   styleUrls: ['./menu-estoque.page.scss'],
 })
 export class MenuEstoquePage implements OnInit {
-
+  @ViewChild(IonModal, { static: false }) modal!: IonModal;
   @ViewChild('produtoModal', { static: false }) produtoModal!: IonModal;
   @ViewChild('vencimentoModal', { static: false }) vencimentoModal!: IonModal;
   @ViewChild('listaModal', { static: false }) listaModal!: IonModal;
@@ -25,6 +25,8 @@ export class MenuEstoquePage implements OnInit {
   idestoque!: string;
   listaCompras: any[] = [];
   searchTerm: string = ''; // Definir searchTerm
+  categoriaEditando : any =null;
+
 
 
   constructor(
@@ -43,10 +45,6 @@ export class MenuEstoquePage implements OnInit {
   async ngOnInit() {
     // Capturando algum parâmetro de rota, se houver
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
-
-    // Carregar todos os produtos do IndexedDB
-    this.produtos = await this.indexeddbService.getAllData('Produtos');
-    this.produtosFiltrados = this.produtos; // Inicialmente, exibe todos os produtos
 
     this.loadProduto();
     this.loadCategoria();
@@ -78,29 +76,41 @@ export class MenuEstoquePage implements OnInit {
 
   async onSubmit() {
     if (this.categoriaForm.valid) {
-      const categoria = this.categoriaForm.value.categoria;
-
-      // Verificar se a categoria já existe
-      const existingCategory = await this.indexeddbService.getCategoryByName(categoria);
-      if (existingCategory) {
-        console.log('Categoria já existe:', existingCategory);
-        return;
-      }
-      try {
-        const categoria = {
-          Nome: this.categoriaForm.value.categoria,
-          Esto: this.idestoque,
+      const categoriaNome = this.categoriaForm.value.categoria;
+    
+      if (this.categoriaEditando && this.categoriaEditando.id) {
+        // Atualizar categoria existente
+        const categoriaAtualizada = { 
+          ...this.categoriaEditando,  // Preserva o id e outros atributos
+          Nome: categoriaNome 
+        };
+    
+        try {
+          await this.indexeddbService.updateData('Categorias', categoriaAtualizada);
+          console.log('Categoria atualizada com sucesso!');
+          this.loadCategoria(); // Recarrega as categorias
+        } catch (error) {
+          console.error('Erro ao atualizar a categoria:', error);
         }
-        await this.indexeddbService.addData('Categorias', categoria);
-        console.log('Categoria adicionada com sucesso');
-
-        this.loadCategoria();
-
-      } catch (error) {
-        console.error('Erro ao adicionar a categoria:', error);
+      } else {
+        // Criar nova categoria
+        try {
+          const novaCategoria = { Nome: categoriaNome, Esto: this.idestoque };
+          await this.indexeddbService.addData('Categorias', novaCategoria);
+          console.log('Categoria adicionada com sucesso!');
+          this.loadCategoria(); // Recarrega as categorias
+        } catch (error) {
+          console.error('Erro ao adicionar a categoria:', error);
+        }
       }
+    
+      // Fechar o modal após salvar
+      this.modal.dismiss();
+      this.categoriaEditando = null; // Limpar o objeto de edição
     }
   }
+  
+  
 
   loadProduto() {
     this.indexeddbService.getAllData('Produto').then((produtos) => {
@@ -194,10 +204,21 @@ export class MenuEstoquePage implements OnInit {
     });
   }
   editCategoria(categoria: any) {
-    // Preenche o formulário com os dados da categoria a ser editada
+    this.categoriaEditando = categoria; // Definir a categoria que será editada
+    
+    // Preencher o formulário com os dados da categoria
     this.categoriaForm.patchValue({
-      categoria: categoria.Nome // Preenchendo o nome da categoria
+      categoria: categoria.Nome, // Preenche o campo de nome
     });
+  
+    // Abrir o modal para edição
+    if (this.modal) {
+      this.modal.present();
+    } else {
+      console.error('Modal não foi encontrado');
+    }
   }
+  
+  
   
 }

@@ -36,11 +36,11 @@
   <form>
     <ion-item>
       <ion-input placeholder="nome, código de barra, categoria"></ion-input>
-      <ion-button>Pesquisa</ion-button>
+      <ion-button >Pesquisa</ion-button>
     </ion-item>
   </form>
 
-  <!-- Lista de Estoques -->
+  <!-- Lista de Produto -->
   <form>
     <ion-list [inset]="true">
       <ng-container *ngFor="let produto of produtos">
@@ -56,6 +56,41 @@
       </ng-container>
     </ion-list>
   </form>
+    <!-- Modal para criação de categoria -->
+    <ion-modal trigger="open-categoria-modal" #modal>
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-button (click)="modal.dismiss()">Cancelar</ion-button>
+          </ion-toolbar>
+        </ion-header>
+  
+        <ion-content class="ion-padding">
+          <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
+            <ion-item>
+              <ion-label>Nova Categoria</ion-label>
+              <ion-input type="text" formControlName="categoria" placeholder="Digite o nome da categoria"></ion-input>
+            </ion-item>
+            <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">Confirmar</ion-button>
+          </form>
+  
+          <ion-list [inset]="true">
+            <ng-container *ngFor="let categorias of categorias">
+              <ion-item-sliding>
+                <ion-item>
+                  <ion-label>{{ categorias.Nome }}</ion-label>
+                </ion-item>
+                <ion-item-options>
+                  <ion-button color="danger" (click)="deleteCategoria(categorias.id)">Apagar</ion-button>
+                  <ion-button (click)="editCategoria(categorias)">Editar</ion-button>
+                </ion-item-options>
+              </ion-item-sliding>
+            </ng-container>
+          </ion-list>
+  
+        </ion-content>
+      </ng-template>
+    </ion-modal>
 <!-- modal para vencimento-->
   <ion-modal id="vencimento-modal" #vencimentoModal trigger="open-vencimento-modal">
     <ng-template>
@@ -116,41 +151,7 @@
 
 
 
-  <!-- Modal para criação de categoria -->
-  <ion-modal trigger="open-categoria-modal" #modal>
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-button (click)="modal.dismiss()">Cancelar</ion-button>
-        </ion-toolbar>
-      </ion-header>
 
-      <ion-content class="ion-padding">
-        <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
-          <ion-item>
-            <ion-label>Nova Categoria</ion-label>
-            <ion-input type="text" formControlName="categoria" placeholder="Digite o nome da categoria"></ion-input>
-          </ion-item>
-          <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">Confirmar</ion-button>
-        </form>
-
-        <ion-list [inset]="true">
-          <ng-container *ngFor="let categorias of categorias">
-            <ion-item-sliding>
-              <ion-item>
-                <ion-label>{{ categorias.Nome }}</ion-label>
-              </ion-item>
-              <ion-item-options>
-                <ion-button color="danger" (click)="deleteCategoria(categorias.id)">Apagar</ion-button>
-                <ion-button (click)="editCategoria(categorias)">Editar</ion-button>
-              </ion-item-options>
-            </ion-item-sliding>
-          </ng-container>
-        </ion-list>
-
-      </ion-content>
-    </ng-template>
-  </ion-modal>
   <!-- Modal para exibir detalhes do produto -->
 <ion-modal id="produto-modal" #produtoModal>
   <ng-template>
