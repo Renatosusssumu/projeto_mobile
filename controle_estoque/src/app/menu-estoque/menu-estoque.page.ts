@@ -42,15 +42,6 @@ export class MenuEstoquePage implements OnInit {
     });
   }
 
-  async ngOnInit() {
-    
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
-
-    
-    this.produtos = await this.indexeddbService.getAllData('Produtos');
-    this.produtosFiltrados = this.produtos; 
-  }
-
   
   filterProducts() {
     const term = this.searchTerm.toLowerCase(); 
