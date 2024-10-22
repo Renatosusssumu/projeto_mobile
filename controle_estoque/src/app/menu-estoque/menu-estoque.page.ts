@@ -10,12 +10,14 @@ import { IndexeddbService } from '../service/indexeddb.service';  // Importando 
   styleUrls: ['./menu-estoque.page.scss'],
 })
 export class MenuEstoquePage implements OnInit {
+  @ViewChild('produtoModal', { static: false }) produtoModal!: IonModal;
   @ViewChild('vencimentoModal', { static: false }) vencimentoModal!: IonModal;
   @ViewChild('listaModal', { static: false }) listaModal!: IonModal;
   alertButtons = ['OK'];
   public folder!: string;
   categoriaForm: FormGroup;
   produtos: any[]=[];
+  selectedProduto: any = null;
   categorias: any[]=[];
   vencidos: any[]=[];
   idestoque !: string;
@@ -136,6 +138,20 @@ export class MenuEstoquePage implements OnInit {
     }
   }
 
+   // Abrir o modal com os detalhes do produto
+   openProdutoModal(produto: any) {
+    this.selectedProduto = produto;  // Defina o produto selecionado
+    this.produtoModal.present();     // Abra o modal
+  }
+
+  // Fechar o modal
+  dismissProdutoModal() {
+    if (this.produtoModal) {
+      this.produtoModal.dismiss();
+      this.selectedProduto = null;   // Limpar o produto selecionado ao fechar o modal
+    }
+  }
+
   criacaoProd (){
     this.navCtrl.navigateForward('/criacao-produto',{
       queryParams:{idestoque: this.idestoque}
@@ -152,4 +168,5 @@ export class MenuEstoquePage implements OnInit {
       queryParams:{idestoque: this.idestoque}
     });
   }
+
 }
