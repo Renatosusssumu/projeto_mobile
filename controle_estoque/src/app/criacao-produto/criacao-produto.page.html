@@ -15,6 +15,7 @@
       <ion-title size="large">Criar Produto</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-button (click)="voltar()">voltar</ion-button>
 
   <form [formGroup]="criacaoprodForm" (ngSubmit)="onSubmit()">
     <ion-list>

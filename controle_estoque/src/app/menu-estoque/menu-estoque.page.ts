@@ -39,6 +39,7 @@ export class MenuEstoquePage implements OnInit {
     });
   }
 
+
   async ngOnInit() {
     // Capturando algum parâmetro de rota, se houver
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
