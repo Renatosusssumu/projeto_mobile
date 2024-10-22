@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonModal, NavController, NavParams } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IndexeddbService } from '../service/indexeddb.service';  // Importando o serviço IndexedDB
+import { IndexeddbService } from '../service/indexeddb.service';  
 
 @Component({
   selector: 'app-menu-estoque',
@@ -10,6 +10,7 @@ import { IndexeddbService } from '../service/indexeddb.service';  // Importando 
   styleUrls: ['./menu-estoque.page.scss'],
 })
 export class MenuEstoquePage implements OnInit {
+
   @ViewChild('produtoModal', { static: false }) produtoModal!: IonModal;
   @ViewChild('vencimentoModal', { static: false }) vencimentoModal!: IonModal;
   @ViewChild('listaModal', { static: false }) listaModal!: IonModal;
@@ -25,32 +26,56 @@ export class MenuEstoquePage implements OnInit {
 
   
 
+
   constructor(
     private fb: FormBuilder, 
     private navCtrl: NavController, 
     private activatedRoute: ActivatedRoute,
+
     private indexeddbService: IndexeddbService,  // Injetando o IndexedDBService
     private route: ActivatedRoute
+
   ) { 
-    // Formulário para adição de categorias
+    
     this.categoriaForm = this.fb.group({
       categoria: ['', Validators.required],
     });
   }
 
-  // Ao submeter, adiciona a categoria ao banco de dados e navega
+  async ngOnInit() {
+    
+    this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
+
+    
+    this.produtos = await this.indexeddbService.getAllData('Produtos');
+    this.produtosFiltrados = this.produtos; 
+  }
+
+  
+  filterProducts() {
+    const term = this.searchTerm.toLowerCase(); 
+
+    this.produtosFiltrados = this.produtos.filter(produto => {
+      const nome = produto.nome?.toLowerCase() || '';
+      const codigoBarra = produto.codigoBarra?.toLowerCase() || '';
+      const categoria = produto.categoria?.toLowerCase() || '';
+      
+      
+      return nome.includes(term) || codigoBarra.includes(term) || categoria.includes(term);
+    });
+  }
+
+  
   async onSubmit() {
     if (this.categoriaForm.valid) {
       const categoria = this.categoriaForm.value.categoria;
 
-      // Verificar se a categoria já existe
+      
       const existingCategory = await this.indexeddbService.getCategoryByName(categoria);
       if (existingCategory) {
         console.log('Categoria já existe:', existingCategory);
         return;
       }
-      
-      // Adicionando categoria ao IndexedDB
       try {
         const categoria = {
           Nome: this.categoriaForm.value.categoria,
@@ -58,12 +83,15 @@ export class MenuEstoquePage implements OnInit {
         }
         await this.indexeddbService.addData('Categorias', categoria);
         console.log('Categoria adicionada com sucesso');
+
         this.loadCategoria();
+
       } catch (error) {
         console.error('Erro ao adicionar a categoria:', error);
       }
     }
   }
+
 
   ngOnInit() {
     this.loadProduto();
@@ -170,3 +198,4 @@ export class MenuEstoquePage implements OnInit {
   }
 
 }
+
