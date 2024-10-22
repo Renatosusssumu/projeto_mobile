@@ -10,47 +10,118 @@
       <ion-title size="large">Nome do Estoque</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-button (click)="voltar()">voltar</ion-button>
 
+  <!-- Formulário de Botões de Ações -->
   <form>
-    <ion-button>Vencimento</ion-button>
-    <ion-button>Lista de Compras</ion-button>
-    <ion-button id="open-modal" expand="block">Categoria</ion-button>
-    <ion-button>Histórico</ion-button>
+    <!-- Modal para Vencimento -->
+    <ion-button id="open-vencimento-modal" expand="block">Vencimento</ion-button>
+    
+    <!-- Modal para Lista de Compras -->
+    <ion-button id="open-lista-modal" expand="block">Lista de Compras</ion-button>
+    
+    <ion-button id="open-categoria-modal" expand="block">Categoria</ion-button>
+    <ion-button (click)="historico()" expand="block">Histórico</ion-button>
   </form>
 
-  
-  <form>
-    <ion-item>
-      <ion-input 
-        placeholder="Pesquisar por nome, código de barras, categoria" 
-        [(ngModel)]="searchTerm" 
-        (ionInput)="filterProducts()"
-      ></ion-input>
-    </ion-item>
-  </form>
 
-  
-  <ion-list>
-    <ion-item *ngFor="let produto of produtosFiltrados">
-      <ion-label>
-        <h2>{{ produto.nome }}</h2>
-        <p>Código de Barra: {{ produto.codigoBarra }}</p>
-        <p>Categoria: {{ produto.categoria }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-
+  <!-- Toolbar para criar novo estoque -->
   <ion-toolbar>
     <ion-buttons slot="secondary">
-      <ion-button (click)="modal.present()">Criar+</ion-button>
+      <ion-button (click)="criacaoProd()">Criar+</ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-modal trigger="open-modal" #modal>
+  <!-- Formulário de Pesquisa -->
+  <form>
+    <ion-item>
+      <ion-input placeholder="nome, código de barra, categoria"></ion-input>
+      <ion-button>Pesquisa</ion-button>
+    </ion-item>
+  </form>
+
+  <!-- Lista de Estoques -->
+  <form>
+    <ion-list [inset]="true">
+      <ng-container *ngFor="let produto of produtos">
+        <ion-item-sliding>
+          <ion-item (click)="openProdutoModal(produto)">  <!-- Clique para abrir o modal -->
+            <ion-label>{{ produto.Nome }}</ion-label>
+          </ion-item>
+          <ion-item-options>
+            <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
+            <ion-button>Editar</ion-button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
+    </ion-list>
+  </form>
+<!-- modal para vencimento-->
+  <ion-modal id="vencimento-modal" #vencimentoModal trigger="open-vencimento-modal">
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-button (click)="cancel()">Cancelar</ion-button>
+          <ion-title>Vencimento</ion-title>
+          <ion-buttons slot="start">
+            <ion-button (click)="dismissVencimento()">Fechar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+  
+      <ion-content>
+        <ng-container *ngFor="let produto of vencidos">
+          <ion-item-sliding>
+            <ion-item>
+              <ion-label>{{ produto.Nome }}</ion-label>
+              <ion-label color="danger">Vencido em: {{ produto.DataValidade | date: 'dd/MM/yyyy' }}</ion-label>
+            </ion-item>
+            <ion-item-options>
+              <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
+              <ion-button>Editar</ion-button>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ng-container>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  
+ <!-- Modal para Lista de Compras -->
+<ion-modal id="lista-modal" #listaModal trigger="open-lista-modal" (willPresent)="loadListaCompras()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Lista de Compras</ion-title>
+        <ion-buttons slot="start">
+          <ion-button (click)="dismissLista()">Fechar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ng-container *ngFor="let produto of listaCompras">
+        <ion-item-sliding>
+          <ion-item>
+            <ion-label>
+              {{ produto.Nome }} - Quantidade: {{ produto.QuantidadeEstoque }} (Mínimo: {{ produto.QuantidadeMinima }})
+            </ion-label>
+          </ion-item>
+          <ion-item-options>
+            <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+
+  <!-- Modal para criação de categoria -->
+  <ion-modal trigger="open-categoria-modal" #modal>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-button (click)="modal.dismiss()">Cancelar</ion-button>
         </ion-toolbar>
       </ion-header>
 
@@ -62,12 +133,54 @@
           </ion-item>
           <ion-button expand="full" type="submit" [disabled]="categoriaForm.invalid" id="alert">Confirmar</ion-button>
         </form>
-        <ion-alert
-          trigger="alert"
-          header="O estoque foi salvo"
-          [buttons]="alertButtons">
-        </ion-alert>
+
+        <ion-list [inset]="true">
+          <ng-container *ngFor="let categorias of categorias">
+            <ion-item-sliding>
+              <ion-item>
+                <ion-label>{{ categorias.Nome }}</ion-label>
+              </ion-item>
+              <ion-item-options>
+                <ion-button color="danger" (click)="deleteCategoria(categorias.id)">Apagar</ion-button>
+                <ion-button>Editar</ion-button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ng-container>
+        </ion-list>
+
       </ion-content>
     </ng-template>
   </ion-modal>
+  <!-- Modal para exibir detalhes do produto -->
+<ion-modal id="produto-modal" #produtoModal>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Detalhes do Produto</ion-title>
+        <ion-buttons slot="start">
+          <ion-button (click)="dismissProdutoModal()">Fechar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label>Nome</ion-label>
+        <ion-text>{{ selectedProduto?.Nome }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Categoria</ion-label>
+        <ion-text>{{ selectedProduto?.Categoria }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Quantidade</ion-label>
+        <ion-text>{{ selectedProduto?.QuantidadeEstoque }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Validade</ion-label>
+        <ion-text>{{ selectedProduto?.DataValidade | date: 'dd/MM/yyyy' }}</ion-text>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 </ion-content>

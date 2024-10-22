@@ -27,20 +27,26 @@ export class IndexeddbService {
         if (!db.objectStoreNames.contains('Categorias')) {
           const categoriasStore = db.createObjectStore('Categorias', { keyPath: 'id', autoIncrement: true });
           categoriasStore.createIndex('Nome', 'Nome', { unique: false });
+          categoriasStore.createIndex('Esto', 'Esto', { unique: false });
         }
+        
 
         if (!db.objectStoreNames.contains('Historico')) {
           const historicoStore = db.createObjectStore('Historico', { keyPath: 'id', autoIncrement: true });
           historicoStore.createIndex('Data', 'Data', { unique: false });
           historicoStore.createIndex('Produto', 'Produto', { unique: false });
           historicoStore.createIndex('Acao', 'Acao', { unique: false });
+          historicoStore.createIndex('Quantidade', 'Quantidade', { unique: false });
+          historicoStore.createIndex('Esto', 'Esto', { unique: false });
         }
 
         if (!db.objectStoreNames.contains('Produto')) {
           const produtoStore = db.createObjectStore('Produto', { keyPath: 'id', autoIncrement: true });
           produtoStore.createIndex('CodigoBarras', 'CodigoBarras', { unique: true });
           produtoStore.createIndex('QuantidadeEstoque', 'QuantidadeEstoque', { unique: false });
+          produtoStore.createIndex('DataValidade', 'DataValidade', { unique: false });
           produtoStore.createIndex('Categoria', 'Categoria', { unique: false });
+          produtoStore.createIndex('Esto','Esto',{unique:false});
         }
 
         if (!db.objectStoreNames.contains('Login')) {
@@ -52,10 +58,10 @@ export class IndexeddbService {
       };
 
       request.onsuccess = (event: any) => {
-        const db = event.target.result as IDBDatabase; // Garantir que `db` seja do tipo `IDBDatabase`
+        const db = event.target.result as IDBDatabase; // Garantir que db seja do tipo IDBDatabase
         this.db = db;
         console.log('Banco de dados conectado com sucesso.');
-        resolve(db); // Resolve com `db` que é do tipo correto
+        resolve(db); // Resolve com db que é do tipo correto
       };
 
       request.onerror = (event: any) => {
@@ -186,4 +192,61 @@ export class IndexeddbService {
       };
     });
   }
+  async deleteAllRelatedToEstoque(estoqueId: number): Promise<void> {
+    const db = await this.getDB(); // Este método pertence ao IndexeddbService
+  
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(['Produto', 'Categorias', 'Historico'], 'readwrite');
+  
+      // Deletar produtos relacionados ao estoque
+      const produtoStore = transaction.objectStore('Produto');
+      const produtoIndex = produtoStore.index('Esto');
+      const produtoRequest = produtoIndex.openCursor(IDBKeyRange.only(estoqueId));
+  
+      produtoRequest.onsuccess = (event: Event) => {
+        const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+        if (cursor) {
+          produtoStore.delete(cursor.primaryKey); // Deleta o produto
+          cursor.continue(); // Continua para o próximo produto
+        }
+      };
+  
+      // Deletar categorias relacionadas ao estoque
+      const categoriaStore = transaction.objectStore('Categorias');
+      const categoriaIndex = categoriaStore.index('Esto');
+      const categoriaRequest = categoriaIndex.openCursor(IDBKeyRange.only(estoqueId));
+  
+      categoriaRequest.onsuccess = (event: Event) => {
+        const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+        if (cursor) {
+          categoriaStore.delete(cursor.primaryKey); // Deleta a categoria
+          cursor.continue(); // Continua para a próxima categoria
+        }
+      };
+  
+      // Deletar histórico relacionado ao estoque
+      const historicoStore = transaction.objectStore('Historico');
+      const historicoIndex = historicoStore.index('Esto');
+      const historicoRequest = historicoIndex.openCursor(IDBKeyRange.only(estoqueId));
+  
+      historicoRequest.onsuccess = (event: Event) => {
+        const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+        if (cursor) {
+          historicoStore.delete(cursor.primaryKey); // Deleta o histórico
+          cursor.continue(); // Continua para o próximo histórico
+        }
+      };
+  
+      transaction.oncomplete = () => {
+        console.log('Todos os dados relacionados ao estoque foram deletados.');
+        resolve();
+      };
+  
+      transaction.onerror = (event: Event) => {
+        console.error('Erro ao deletar dados relacionados ao estoque:', event);
+        reject(event);
+      };
+    });
+  }
+  
 }

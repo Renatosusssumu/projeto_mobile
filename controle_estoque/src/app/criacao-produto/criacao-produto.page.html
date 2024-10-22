@@ -36,15 +36,18 @@
 
       <ion-item>
         <ion-label position="floating">Data de Validade</ion-label>
-        <ion-datetime presentation="date" [preferWheel]="true" displayFormat="DD/MM/YYYY" formControlName="dataval"></ion-datetime>
+        <ion-datetime presentation="date" max="2029-05-31T23:59:59" displayFormat="DD/MM/YYYY" formControlName="dataval"></ion-datetime>
       </ion-item>
 
+      
+
+      
       <ion-item>
-        <ion-label position="floating">Categoria</ion-label>
+        <ion-label>Categoria</ion-label>
         <ion-select formControlName="categ">
-          <ion-select-option value="cat1">Categoria 1</ion-select-option>
-          <ion-select-option value="cat2">Categoria 2</ion-select-option>
-          <ion-select-option value="cat3">Categoria 3</ion-select-option>
+          <ion-select-option *ngFor="let categoria of categoria" [value]="categoria.id">
+            {{ categoria.Nome }}
+          </ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -60,3 +63,4 @@
 
   </form>
 </ion-content>
+

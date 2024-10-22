@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController, NavParams } from '@ionic/angular';
 import { IndexeddbService } from '../service/indexeddb.service';  // Importe o serviço de IndexedDB
 
 @Component({
@@ -13,12 +13,15 @@ export class CriacaoProdutoPage implements OnInit {
 
   public folder!: string;
   criacaoprodForm: FormGroup;
+  idestoque!:string;
+  categoria:any[]=[];
 
   // Injetar o serviço IndexedDB
   constructor(
     private fb: FormBuilder,
     private navCtrl: NavController,
-    private indexeddbService: IndexeddbService
+    private indexeddbService: IndexeddbService,
+    private route: ActivatedRoute
   ) {
     // Inicializando o formulário
     this.criacaoprodForm = this.fb.group({
@@ -34,6 +37,11 @@ export class CriacaoProdutoPage implements OnInit {
 
   ngOnInit() {
     this.folder = 'Cadastro de Produto';
+    this.loadCategorias();
+    this.route.queryParams.subscribe(params => {
+      this.idestoque = params['idestoque'];
+      console.log('ID Estoque:', this.idestoque);
+    });
   }
 
   // Método para enviar os dados do formulário e salvar no IndexedDB
@@ -47,14 +55,34 @@ export class CriacaoProdutoPage implements OnInit {
         QuantidadeMinima: this.criacaoprodForm.value.quantmin,
         DataValidade: this.criacaoprodForm.value.dataval,
         Categoria: this.criacaoprodForm.value.categ,
-        ValorPago: this.criacaoprodForm.value.valpag
+        ValorPago: this.criacaoprodForm.value.valpag,
+        Esto:this.idestoque,
       };
 
       // Adicionando o produto no banco de dados (IndexedDB)
       this.indexeddbService.addData('Produto', produto);
 
       // Redirecionar para o menu de estoque após salvar
-      this.navCtrl.navigateForward('/menu-estoque');
+      this.navCtrl.navigateForward('/menu-estoque',{
+        queryParams:{idestoque: this.idestoque}
+      });
     }
   }
+
+  loadCategorias() {
+    this.indexeddbService.getAllData('Categorias').then((categoria) => {
+      this.categoria = categoria.filter(categoria => categoria.Esto === this.idestoque);
+    });
+  }
+
+  ionViewWillEnter() {
+    this.loadCategorias();
+  }
+
+  voltar (){
+    this.navCtrl.navigateForward('/menu-estoque',{
+      queryParams:{idestoque: this.idestoque}
+    });
+  }
+
 }

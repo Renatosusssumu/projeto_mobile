@@ -24,6 +24,7 @@ const routes: Routes = [
     loadChildren: () => import('./historico/historico.module').then( m => m.HistoricoPageModule)
   },
 
+
 ];
 
 @NgModule({
