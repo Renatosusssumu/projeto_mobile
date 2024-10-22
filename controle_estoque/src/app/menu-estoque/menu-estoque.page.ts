@@ -43,20 +43,6 @@ export class MenuEstoquePage implements OnInit {
   }
 
   
-  filterProducts() {
-    const term = this.searchTerm.toLowerCase(); 
-
-    this.produtosFiltrados = this.produtos.filter(produto => {
-      const nome = produto.nome?.toLowerCase() || '';
-      const codigoBarra = produto.codigoBarra?.toLowerCase() || '';
-      const categoria = produto.categoria?.toLowerCase() || '';
-      
-      
-      return nome.includes(term) || codigoBarra.includes(term) || categoria.includes(term);
-    });
-  }
-
-  
   async onSubmit() {
     if (this.categoriaForm.valid) {
       const categoria = this.categoriaForm.value.categoria;
