@@ -42,13 +42,13 @@
   <!-- Lista de Estoques -->
   <form>
     <ion-list [inset]="true">
-      <ng-container *ngFor="let produtos of produtos">
+      <ng-container *ngFor="let produto of produtos">
         <ion-item-sliding>
-          <ion-item>
-            <ion-label>{{ produtos.Nome }}</ion-label>
+          <ion-item (click)="openProdutoModal(produto)">  <!-- Clique para abrir o modal -->
+            <ion-label>{{ produto.Nome }}</ion-label>
           </ion-item>
           <ion-item-options>
-            <ion-button color="danger" (click)="deleteProduto(produtos.id)">Apagar</ion-button>
+            <ion-button color="danger" (click)="deleteProduto(produto.id)">Apagar</ion-button>
             <ion-button>Editar</ion-button>
           </ion-item-options>
         </ion-item-sliding>
@@ -149,4 +149,36 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+  <!-- Modal para exibir detalhes do produto -->
+<ion-modal id="produto-modal" #produtoModal>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Detalhes do Produto</ion-title>
+        <ion-buttons slot="start">
+          <ion-button (click)="dismissProdutoModal()">Fechar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label>Nome</ion-label>
+        <ion-text>{{ selectedProduto?.Nome }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Categoria</ion-label>
+        <ion-text>{{ selectedProduto?.Categoria }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Quantidade</ion-label>
+        <ion-text>{{ selectedProduto?.QuantidadeEstoque }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Validade</ion-label>
+        <ion-text>{{ selectedProduto?.DataValidade | date: 'dd/MM/yyyy' }}</ion-text>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 </ion-content>
