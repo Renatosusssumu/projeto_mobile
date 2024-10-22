@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController, NavParams } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { IndexeddbService } from '../service/indexeddb.service'; // Certifique-se de importar o serviço IndexedDB correto
 
@@ -13,8 +13,10 @@ export class HistoricoPage implements OnInit {
 
   historicoForm: FormGroup;
   historicos: any[] = [];
-  idestoque !: string;
-  produtos:any[]=[];
+  historicosFiltrados: any[] = []; // Para armazenar os históricos filtrados
+  idestoque!: string;
+  produtos: any[] = [];
+  dataSelecionada: string = ''; // Para armazenar a data selecionada pelo usuário
 
   constructor(
     private fb: FormBuilder,
@@ -43,7 +45,7 @@ export class HistoricoPage implements OnInit {
     this.loadProduto();
   }
 
-  loadProduto(){
+  loadProduto() {
     this.indexeddbService.getAllData('Produto').then((produtos) => {
       this.produtos = produtos;
     });
@@ -51,76 +53,77 @@ export class HistoricoPage implements OnInit {
 
   loadHistorico() {
     this.indexeddbService.getAllData('Historico').then((historicos) => {
-      this.historicos = historicos.filter(historicos => historicos.Esto === this.idestoque);
+      this.historicos = historicos.filter(historico => historico.Esto === this.idestoque);
+      this.historicosFiltrados = this.historicos; // Iniciar a lista de filtrados com todos os históricos
     });
   }
 
   // Método para enviar os dados do formulário e salvar no IndexedDB
-  // Método para enviar os dados do formulário e salvar no IndexedDB
-onSubmit() {
-  if (this.historicoForm.valid) {
-    // Extrair dados do formulário
-    const acao = this.historicoForm.value.acao;
-    const quantidade = this.historicoForm.value.quantidade;
-    const produtoId = this.historicoForm.value.produto;
+  onSubmit() {
+    if (this.historicoForm.valid) {
+      const acao = this.historicoForm.value.acao;
+      const quantidade = this.historicoForm.value.quantidade;
+      const produtoId = this.historicoForm.value.produto;
 
-    // Buscar todos os produtos no IndexedDB e filtrar pelo ID
-    this.indexeddbService.getAllData('Produto').then((produtos) => {
-      const produto = produtos.find(p => p.id === produtoId);
-      if (!produto) {
-        console.error('Produto não encontrado');
-        return;
-      }
-
-      // Atualizar a quantidade com base na ação
-      let novaQuantidade;
-      if (acao === 'comprou') {
-        novaQuantidade = produto.QuantidadeEstoque + quantidade; // Aumentar a quantidade se for uma compra
-      } else if (acao === 'vendeu') {
-        novaQuantidade = produto.QuantidadeEstoque - quantidade; // Diminuir a quantidade se for uma venda
-        if (novaQuantidade < 0) {
-          novaQuantidade = 0; // Garantir que a quantidade não seja negativa
+      this.indexeddbService.getAllData('Produto').then((produtos) => {
+        const produto = produtos.find(p => p.id === produtoId);
+        if (!produto) {
+          console.error('Produto não encontrado');
+          return;
         }
-      }
 
-      // Atualizar o produto com a nova quantidade
-      produto.QuantidadeEstoque = novaQuantidade;
-      this.indexeddbService.updateData('Produto', produto).then(() => {
-        console.log('Produto atualizado com sucesso');
+        let novaQuantidade;
+        if (acao === 'comprou') {
+          novaQuantidade = produto.QuantidadeEstoque + quantidade;
+        } else if (acao === 'vendeu') {
+          novaQuantidade = produto.QuantidadeEstoque - quantidade;
+          if (novaQuantidade < 0) novaQuantidade = 0;
+        }
 
-        // Adicionando o histórico no banco de dados (IndexedDB)
-        const historico = {
-          Acao: acao,
-          Quantidade: quantidade,
-          Produto: produtoId,
-          Data: new Date().toISOString(), // Adicionar data do dispositivo
-          Esto: this.idestoque
-        };
+        produto.QuantidadeEstoque = novaQuantidade;
+        this.indexeddbService.updateData('Produto', produto).then(() => {
+          const historico = {
+            Acao: acao,
+            Quantidade: quantidade,
+            Produto: produtoId,
+            Data: new Date().toISOString(), // Data da ação
+            Esto: this.idestoque
+          };
 
-        this.indexeddbService.addData('Historico', historico).then(() => {
-          this.loadHistorico(); // Recarregar o histórico para exibir o novo item
-          this.historicoForm.reset(); // Limpar o formulário após adicionar
+          this.indexeddbService.addData('Historico', historico).then(() => {
+            this.loadHistorico();
+            this.historicoForm.reset();
+          });
         });
-      }).catch(error => {
-        console.error('Erro ao atualizar o produto:', error);
       });
-    }).catch(error => {
-      console.error('Erro ao buscar os produtos:', error);
-    });
-
+    }
   }
-}
 
+  // Função chamada ao selecionar uma data
+  onDateChange(event: any) {
+    this.dataSelecionada = event.detail.value.split('T')[0]; // Extrai a data no formato YYYY-MM-DD
+  }
+
+  // Função para filtrar o histórico pela data selecionada
+  filtrarHistoricoPorData() {
+    if (this.dataSelecionada) {
+      this.historicosFiltrados = this.historicos.filter(historico => {
+        const dataHistorico = historico.Data.split('T')[0]; // Extrai a data do histórico
+        return dataHistorico === this.dataSelecionada; // Compara com a data selecionada
+      });
+    } else {
+      this.historicosFiltrados = this.historicos; // Se não houver data selecionada, exibe todos os históricos
+    }
+  }
 
   getProdutoNome(produtoId: number): string {
     const produto = this.produtos.find(prod => prod.id === produtoId);
     return produto ? produto.Nome : 'Produto desconhecido';
   }
 
-  voltar (){
-    this.navCtrl.navigateForward('/menu-estoque',{
-      queryParams:{idestoque: this.idestoque}
+  voltar() {
+    this.navCtrl.navigateForward('/menu-estoque', {
+      queryParams: { idestoque: this.idestoque }
     });
   }
-
 }

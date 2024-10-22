@@ -5,10 +5,20 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-button (click)="voltar()">voltar</ion-button>
+  <ion-button (click)="voltar()">Voltar</ion-button>
+
+  <!-- Filtro por data -->
+  <ion-item>
+    <ion-label>Filtrar por Data</ion-label>
+    <ion-datetime displayFormat="DD/MM/YYYY" (ionChange)="onDateChange($event)" placeholder="Selecione a Data"></ion-datetime>
+  </ion-item>
+
+  <!-- Botão para aplicar o filtro -->
+  <ion-button expand="full" (click)="filtrarHistoricoPorData()">Filtrar Histórico</ion-button>
+
   <form [formGroup]="historicoForm" (ngSubmit)="onSubmit()">
     <ion-item>
-      <ion-label position="floating">Acao</ion-label>
+      <ion-label position="floating">Ação</ion-label>
       <ion-select formControlName="acao">
         <ion-select-option value="comprou">Compra</ion-select-option>
         <ion-select-option value="vendeu">Venda</ion-select-option>
@@ -17,8 +27,8 @@
     <ion-item>
       <ion-label>Produto</ion-label>
       <ion-select formControlName="produto">
-        <ion-select-option *ngFor="let produtos of produtos" [value]="produtos.id">
-          {{ produtos.Nome }}
+        <ion-select-option *ngFor="let produto of produtos" [value]="produto.id">
+          {{ produto.Nome }}
         </ion-select-option>
       </ion-select>
     </ion-item>
@@ -29,12 +39,14 @@
     <ion-button expand="full" type="submit" [disabled]="historicoForm.invalid">Salvar</ion-button>
   </form>
 
+  <!-- Lista de histórico filtrado -->
   <ion-list [inset]="true">
-    <ng-container *ngFor="let historico of historicos">
+    <ng-container *ngFor="let historico of historicosFiltrados">
       <ion-item>
         <ion-label>{{ getProdutoNome(historico.Produto) }}</ion-label>
         <ion-label>{{ historico.Quantidade }}</ion-label>
         <ion-label>{{ historico.Acao }}</ion-label>
+        <ion-label>{{ historico.Data | date: 'dd/MM/yyyy' }}</ion-label>
       </ion-item>
     </ng-container>
   </ion-list>
